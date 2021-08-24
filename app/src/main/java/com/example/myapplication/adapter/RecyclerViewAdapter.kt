@@ -10,18 +10,21 @@ import com.example.myapplication.R
 import com.example.myapplication.model.ItemModel
 import kotlinx.android.synthetic.main.item_layout.view.*
 
-class RecyclerViewAdapter(private var itemList:MutableList<ItemModel>): RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>(){
-    class  ViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
-        val itemName:TextView = itemView.item_name
-        val itemSName:TextView = itemView.item_surname
+class RecyclerViewAdapter(private var itemList: MutableList<ItemModel>) :
+    RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
-        fun bind(item:ItemModel){
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val itemName: TextView = itemView.item_name
+        val itemSName: TextView = itemView.item_surname
 
+        fun bind(item: ItemModel) {
+            item.first_name
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val itemView =LayoutInflater.from(parent.context).inflate(R.layout.item_layout,parent,false)
+        val itemView =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_layout, parent, false)
         return ViewHolder(itemView)
     }
 
@@ -29,7 +32,7 @@ class RecyclerViewAdapter(private var itemList:MutableList<ItemModel>): Recycler
         val listItem = itemList[position]
         holder.bind(listItem)
 
-        holder.itemName.text = listItem.text
+        holder.itemName.text = listItem.first_name
         holder.itemSName.text = listItem.last_name
     }
 
@@ -38,8 +41,8 @@ class RecyclerViewAdapter(private var itemList:MutableList<ItemModel>): Recycler
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setItemList(list: MutableList<ItemModel>){
-        itemList = list
+    fun setItemList(list: MutableList<ItemModel>) {
+        itemList.addAll(list)
         notifyDataSetChanged()
     }
 }

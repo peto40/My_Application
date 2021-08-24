@@ -2,12 +2,10 @@ package com.example.myapplication.ui.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.Interface.RetrofitService
@@ -18,15 +16,17 @@ import com.example.myapplication.itemViewModel.ItemViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
-    lateinit var mService:RetrofitService
+    private lateinit var mService: RetrofitService
     private var _binding: FragmentHomeBinding? = null
-    lateinit var viewModel:ItemViewModel
-    lateinit var layoutManager: LinearLayoutManager
+    private lateinit var viewModel: ItemViewModel
+    private lateinit var layoutManager: LinearLayoutManager
     private lateinit var myItemAdapter: RecyclerViewAdapter
+    private var itemListSize: Int? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -37,7 +37,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         homeViewModel =
             ViewModelProvider(
                 this,
@@ -55,15 +55,22 @@ class HomeFragment : Fragment() {
         binding.itemRv.adapter = myItemAdapter
         viewModel = ViewModelProvider(this).get(ItemViewModel::class.java)
 
-        GlobalScope.launch(Dispatchers.IO) {
-            viewModel.viewModelRequest()
-            Log.d("coroutine","It's Ok")
-        }
-        viewModel.itemListLiveData.observe(this, Observer {
-            myItemAdapter.setItemList(it)
-        }
-        )
 
+        viewModel.itemListLiveData.observe(viewLifecycleOwner, {
+            myItemAdapter.setItemList(it)
+        })
+
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.getItemListSizeRequest()
+            withContext(Dispatchers.Main) {
+                viewModel.itemListSizeData.observe(viewLifecycleOwner, {
+                    itemListSize = it
+                })
+            }
+            for (i in 1..itemListSize!!) {
+                viewModel.getItemListRequest(i)
+            }
+        }
         return root
     }
 
