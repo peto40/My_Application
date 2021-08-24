@@ -29,8 +29,8 @@ class RecyclerViewAdapter(private var itemList:MutableList<ItemModel>): Recycler
         val listItem = itemList[position]
         holder.bind(listItem)
 
-        holder.itemName.text = listItem.name
-        holder.itemSName.text = listItem.surname
+        holder.itemName.text = listItem.text
+        holder.itemSName.text = listItem.last_name
     }
 
     override fun getItemCount(): Int {

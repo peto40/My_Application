@@ -4,7 +4,7 @@ import com.example.myapplication.model.ItemModel
 import retrofit2.Call
 import retrofit2.http.GET
 
-abstract class RetrofitService {
-    @GET("users?page=1")
-    abstract fun getItemList(): Call<MutableList<ItemModel>>
+interface RetrofitService {
+    @GET("messages1.json") //api/users
+    fun getItemList(): Call<MutableList<ItemModel>>
 }

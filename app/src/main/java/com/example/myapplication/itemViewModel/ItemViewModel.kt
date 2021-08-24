@@ -1,5 +1,6 @@
 package com.example.myapplication.itemViewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -25,7 +26,6 @@ class ItemViewModel: ViewModel() {
                     _itemListLiveData.postValue(response.body())
                 }
             }
-
             override fun onFailure(call: Call<MutableList<ItemModel>>, t: Throwable) {
                 _itemListLiveData.postValue(mutableListOf())
             }

@@ -1,8 +1,8 @@
 package com.example.myapplication.model
 
 data class ItemModel(
-    val name:String,
-    val surname:String,
+    val text:String, //first_name
+    val last_name:String,
     val email:String,
-    val image:String?
+    val avatar:String?
 )

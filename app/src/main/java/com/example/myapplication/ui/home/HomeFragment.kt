@@ -2,6 +2,7 @@ package com.example.myapplication.ui.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +15,15 @@ import com.example.myapplication.adapter.RecyclerViewAdapter
 import com.example.myapplication.common.Common
 import com.example.myapplication.databinding.FragmentHomeBinding
 import com.example.myapplication.itemViewModel.ItemViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
-    private var _binding: FragmentHomeBinding? = null
     lateinit var mService:RetrofitService
+    private var _binding: FragmentHomeBinding? = null
     lateinit var viewModel:ItemViewModel
     lateinit var layoutManager: LinearLayoutManager
     private lateinit var myItemAdapter: RecyclerViewAdapter
@@ -50,7 +54,11 @@ class HomeFragment : Fragment() {
         binding.itemRv.layoutManager = layoutManager
         binding.itemRv.adapter = myItemAdapter
         viewModel = ViewModelProvider(this).get(ItemViewModel::class.java)
-        viewModel.viewModelRequest()
+
+        GlobalScope.launch(Dispatchers.IO) {
+            viewModel.viewModelRequest()
+            Log.d("coroutine","It's Ok")
+        }
         viewModel.itemListLiveData.observe(this, Observer {
             myItemAdapter.setItemList(it)
         }
