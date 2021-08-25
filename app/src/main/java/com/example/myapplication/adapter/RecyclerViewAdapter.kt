@@ -10,15 +10,20 @@ import com.example.myapplication.R
 import com.example.myapplication.model.ItemModel
 import kotlinx.android.synthetic.main.item_layout.view.*
 
-class RecyclerViewAdapter(private var itemList: MutableList<ItemModel>) :
+class RecyclerViewAdapter(
+    private var itemList: MutableList<ItemModel>,
+    private var listener: ItemClickInterface
+) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val itemName: TextView = itemView.item_name
         val itemSName: TextView = itemView.item_surname
 
         fun bind(item: ItemModel) {
-            item.first_name
+            itemView.setOnClickListener {
+                listener.onItemClicked(item)
+            }
         }
     }
 
@@ -45,4 +50,8 @@ class RecyclerViewAdapter(private var itemList: MutableList<ItemModel>) :
         itemList.addAll(list)
         notifyDataSetChanged()
     }
+}
+
+interface ItemClickInterface {
+    fun onItemClicked(item: ItemModel)
 }

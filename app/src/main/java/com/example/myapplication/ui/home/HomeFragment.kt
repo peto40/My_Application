@@ -5,20 +5,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.Interface.RetrofitService
+import com.example.myapplication.adapter.ItemClickInterface
 import com.example.myapplication.adapter.RecyclerViewAdapter
 import com.example.myapplication.common.Common
 import com.example.myapplication.databinding.FragmentHomeBinding
 import com.example.myapplication.itemViewModel.ItemViewModel
+import com.example.myapplication.model.ItemModel
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), ItemClickInterface {
 
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var mService: RetrofitService
@@ -27,6 +33,7 @@ class HomeFragment : Fragment() {
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var myItemAdapter: RecyclerViewAdapter
     private var itemListSize: Int? = null
+    private lateinit var listener: ItemClickInterface
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -46,8 +53,9 @@ class HomeFragment : Fragment() {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        listener = this
         myItemAdapter = RecyclerViewAdapter(
-            mutableListOf()
+            mutableListOf(), listener
         )
         mService = Common.retrofitService
         layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
@@ -78,4 +86,14 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onItemClicked(item: ItemModel) {
+        card_view.name.text = item.first_name
+        card_view.surname.text = item.last_name
+        card_view.item_email.text = item.email
+
+        Picasso.get().load(item.avatar).into(card_view.item_image)
+        card_view.isVisible = true
+    }
+
 }
